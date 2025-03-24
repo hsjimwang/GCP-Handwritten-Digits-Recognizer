@@ -1,0 +1,5 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-f', 'Dockerfile', '-t', 'us-central1-docker.pkg.dev/digits-fastapi-app/digits-fastapi-app:latest', '.']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-central1.docker.pkg.dev/digits-454618/digits-fastapi-app/digits-fastapi-app:latest']
