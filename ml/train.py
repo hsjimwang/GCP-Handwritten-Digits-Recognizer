@@ -1,8 +1,6 @@
 import argparse
 
-import pandas as pd
 import pytorch_lightning as pl
-from download_mnist_dataset import download_mnist
 from model import Config, LitEMNIST
 from pytorch_lightning import loggers
 from pytorch_lightning.callbacks import ModelCheckpoint

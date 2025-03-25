@@ -86,29 +86,20 @@ class Config:
 
     :param data_dir: The path to the directory where the EMNIST dataset is stored. Defaults to the value of
             the 'PATH_DATASETS' environment variable or '.' if not set.
-
     :param save_dir: The path to the directory where the training logs will be saved. Defaults to 'logs/'.
-
     :param batch_size: The batch size to use during training. Defaults to 256 if a GPU is available,
             or 64 otherwise.
-
     :param max_epochs: The maximum number of epochs to train the model for. Defaults to 3.
-
     :param accelerator: The accelerator to use for training. Can be one of "cpu", "gpu", "tpu", "ipu", "auto".
-
     :param devices: The number of devices to use for training. Defaults to 1.
 
     Examples:
         This dataclass can be used to specify the configuration options for training a PyTorch Lightning model on the
         EMNIST dataset. A new instance of this dataclass can be created as follows:
-
         >>> config = Config()
-
         The default values for each argument are shown in the documentation above. If desired, any of these values can be
         overridden when creating a new instance of the dataclass:
-
         >>> config = Config(batch_size=128, max_epochs=5)
-
     """
 
     data_dir: str = os.environ.get("PATH_DATASETS", ".")

@@ -16,7 +16,15 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-    
+
+    - name: Check code style with isort
+      run: |
+        isort --check-only --diff .
+
+    - name: Check code style with black
+      run: |
+        black --check .
+
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 

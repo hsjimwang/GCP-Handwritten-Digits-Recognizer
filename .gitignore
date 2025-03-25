@@ -1,0 +1,46 @@
+# EMNIST Dataset
+ml/data
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Logs
+logs/
+*.log
+
+# PyTorch Checkpoints
+*.ckpt
+checkpoints/
+
+# Dataset & Outputs
+data/
+output/
+results/
+
+# Cache & Temp Files
+*.cache
+*.tmp
+*.swp
+
+# VSCode & IDE settings
+.vscode/
+.idea/
+*.iml
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore large model files
+*.pth
+*.pt
