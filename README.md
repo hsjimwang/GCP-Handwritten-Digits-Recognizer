@@ -1,52 +1,105 @@
-# GCP-Handwritten-Digits-Recognizer
-A FastAPI-based handwritten digit recognition service deployed on Google Cloud Run.
+# GCP Handwritten Digits Recognizer
 
-## Install dependency
-```
+A lightweight and scalable handwritten digit recognition service built with FastAPI, designed for real-time inference. This service leverages a trained deep learning model to recognize handwritten digits from input images and is efficiently deployed on **Google Cloud Run**, ensuring seamless scalability and low-latency predictions.
+
+## Installation
+
+Install dependencies:
+```sh
 pip3 install -r requirements.txt
-
-# For developers
+```
+For development:
+```sh
 pip3 install -r requirements-dev.txt
 ```
 
-## Train the model
+---
+
+## Model Training
+
+Train the model using the EMNIST dataset:
+```sh
+cd ./ml && python3 train.py \
+    --data ./data \
+    --checkpoint_dir ./work_dirs/exp1 \
+    --max_epochs 50 \
+    --batch_size 256 \
+    --num_workers 16
 ```
-cd ./ml && python3 train.py --data ./data --checkpoint_dir ./work_dirs/exp1 --max_epochs 50 --batch_size 256 --num_workers 16
+Note: This command will **automatically download the EMNIST dataset** if it is not already present in the specified --data directory.
+
+## Model Testing & Inference
+
+### Run a Prediction
+Predict on a single image:
+```sh
+cd ./ml && python3 predict.py \
+    --checkpoint emnist_digits_recognizer.ckpt \
+    --image ./concat_img/7V900Ii.png
 ```
 
-## Predict the model
-```
-cd ./ml && python3 predict.py --checkpoint emnist_digits_recognizer.ckpt --image ./concat_img/7V900Ii.png
+### Test on EMNIST Test Set
+Evaluate the trained model:
+```sh
+cd ./ml && python3 test.py \
+    --checkpoint emnist_digits_recognizer.ckpt \
+    --data ./data
 ```
 
-## Build docker image
-```
+---
+
+## Model Performance
+
+**Checkpoint:** `ml/emnist_digits_recognizer.ckpt`
+
+| Metric               | Value  |
+|----------------------|--------|
+| **Test Accuracy**    | 0.871  |
+| **Model Size (MB)**  | 4.914  |
+| **Number of Params** | 428M   |
+
+---
+
+## Deployment
+
+### Build Docker Image
+Build an amd64-compatible Docker image:
+```sh
 docker buildx build --platform linux/amd64 --no-cache -t digits-fastapi-app-amd64 .
 ```
-* To deploy on Google Cloud Run, it only supports on Linux/amd64 currently.
+> Google Cloud Run currently supports **Linux/amd64** only.
 
-## Tag and push docker image to Google Artifact Registry
-```
-docker tag digits-fastapi-app-amd64 us-central1-docker.pkg.dev/digits-454618/digits-fastapi-app-amd64/digits-fastapi-app-amd64:latest
+### Push to Google Artifact Registry
+Tag and push the image:
+```sh
+docker tag digits-fastapi-app-amd64 \
+    us-central1-docker.pkg.dev/digits-454618/digits-fastapi-app-amd64/digits-fastapi-app-amd64:latest
+
 docker push us-central1-docker.pkg.dev/digits-454618/digits-fastapi-app-amd64/digits-fastapi-app-amd64
 ```
-* Note: You can customize the GCP location, project id, and docker image name.
+> Customize the **GCP location**, **project ID**, and **Docker image name** as needed.
 
-## Deploy service on Google Cloud Run
-```
+### Deploy on Google Cloud Run
+Deploy the service:
+```sh
 gcloud run services replace ./gcp/service.yaml --region us-central1
 gcloud run services set-iam-policy digits-fastapi-app-amd64 ./gcp/gcr-service-policy.yaml --region us-central1
 ```
-Note: The location name must be identical to the above item.
+> Ensure the **region name** matches your settings.
 
-Go to https://console.cloud.google.com/run?inv=1&invt=Abs2ew&project=digits-454618 to check the running service and also check the url.
+Check the deployment at [Google Cloud Run Console](https://console.cloud.google.com/run?project=digits-454618).
+
+---
 
 ## Usage
-```
+
+Send a digit image for recognition:
+```sh
 curl -X 'POST' 'https://digits-fastapi-app-amd64-124569006945.us-central1.run.app/predict' \
   -H 'accept: application/json' \
   -H 'Content-Type: multipart/form-data' \
-  -F 'file=@./ml/concat_img/15aI4952.png' 
+  -F 'file=@./ml/concat_img/15aI4952.png'
 ```
 
-For more details, please refer to: [Wiki Page](https://github.com/hsjimwang/GCP-Handwritten-Digits-Recognizer/wiki).
+For more details, visit the [Wiki Page](https://github.com/hsjimwang/GCP-Handwritten-Digits-Recognizer/wiki).
+
