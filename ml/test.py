@@ -1,10 +1,16 @@
 import argparse
+import os
 
 import torch
 from model import Config, LitEMNIST, TransformBuilder
 from torch.utils.data import DataLoader
 from torchmetrics.classification import Accuracy
 from torchvision import datasets
+
+
+def count_parameters(model: torch.nn.Module) -> int:
+    """Calculate the total number of trainable parameters in a model."""
+    return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
 
 def load_model(checkpoint_path: str, config: Config, device: torch.device):
@@ -97,6 +103,11 @@ def main(
 
     print(f"Test Loss: {avg_loss:.4f}")
     print(f"Test Accuracy: {accuracy:.4f}")
+    print("Model size (MB):", os.path.getsize(checkpoint_path) / (1024 * 1024))
+
+    # Output model parameter count
+    total_params = count_parameters(model)
+    print(f"Total model parameters: {total_params:,}")
 
 
 if __name__ == "__main__":
